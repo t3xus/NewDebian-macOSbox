@@ -24,12 +24,7 @@ This script automates the system setup and configuration on **Debian-based Linux
 - **Tailscale**: Secure VPN for easy remote access.
 - **Adobe Acrobat Reader**: PDF reader.
 - **LibreOffice**: Office suite (equivalent to Microsoft Office).
-
-## Prerequisites
-
-- **Debian-based systems**: Requires `apt` for package management.
-- **macOS**: Uses **Homebrew** for package management.
-- Internet connection is required for downloading packages and updates.
+- **HomeBrew**: Homebrew package manager for macOS 
 
 ## How to Use
 
