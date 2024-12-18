@@ -1,137 +1,140 @@
 #!/bin/bash
 
-# Function to display a progress bar (for terminal)
-show_progress() {
-  echo -n "$1"
-  while kill -0 "$!" 2>/dev/null; do
-    echo -n "."
-    sleep 1
-  done
-  echo " Done."
-}
+# New macOS Setup Script. Gooch James 2024
+# This script automates the setup of a macOS system, including installing Homebrew and commonly used applications, as well as additional setup features.
 
-# Function to install Homebrew (macOS)
-install_homebrew() {
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    if ! command -v brew &> /dev/null; then
-      echo "Homebrew is not installed. Installing Homebrew..."
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" &> /dev/null &
-      show_progress "Installing Homebrew"
-      echo "Homebrew installed successfully."
-    else
-      echo "Homebrew is already installed."
-    fi
-  fi
-}
-
-# Function to update system (Debian and macOS)
-update_system() {
-  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "Updating Debian-based system..."
-    sudo apt-get update &> /dev/null &
-    show_progress "Updating system"
-    sudo apt-get upgrade -y &> /dev/null &
-    show_progress "Upgrading system"
-  elif [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Updating macOS system..."
-    softwareupdate --install --all &> /dev/null &
-    show_progress "Updating system"
-  else
-    echo "Unsupported OS for this script."
+# Function to check and install Xcode Command Line Tools
+install_xcode_tools() {
+  echo "Checking for Xcode Command Line Tools..."
+  xcode-select -p &>/dev/null
+  if [ $? -ne 0 ]; then
+    echo "Installing Xcode Command Line Tools..."
+    xcode-select --install
+    echo "Please follow the on-screen instructions to complete the installation."
+    echo "Rerun this script after Xcode tools are installed."
     exit 1
+  else
+    echo "Xcode Command Line Tools are already installed."
   fi
 }
 
-# Function to install packages (TeamViewer, Tailscale, Adobe Reader, LibreOffice)
-install_packages() {
-  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "Installing applications for Debian-based system..."
-    sudo apt-get install -y teamviewer tailscale libreoffice curl &> /dev/null &
-    show_progress "Installing TeamViewer, Tailscale, LibreOffice"
-
-  elif [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Installing applications for macOS system..."
-    brew install --cask teamviewer tailscale adobe-acrobat-reader libreoffice &> /dev/null &
-    show_progress "Installing TeamViewer, Tailscale, Adobe Reader, LibreOffice"
+# Function to install Homebrew
+install_homebrew() {
+  echo "Checking for Homebrew..."
+  if ! command -v brew &>/dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo "Homebrew installed successfully."
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  else
+    echo "Homebrew is already installed."
   fi
 }
 
-# Function to enable dark mode (macOS only)
-enable_dark_mode() {
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Enabling dark mode on macOS..."
-    osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
-    echo "Dark mode enabled."
-  fi
+# Function to install common applications via Homebrew
+install_common_apps() {
+  echo "Updating Homebrew..."
+  brew update
+
+  echo "Installing commonly used applications..."
+
+  # Install CLI tools
+  brew install git
+  brew install wget
+  brew install node
+  brew install python3
+  brew install htop
+  brew install tmux
+
+  # Install GUI applications
+  echo "Installing GUI applications..."
+  brew install --cask google-chrome
+  brew install --cask visual-studio-code
+  brew install --cask slack
+  brew install --cask spotify
+  brew install --cask zoom
+  brew install --cask rectangle
+  brew install --cask iterm2
+  brew install --cask firefox
+  brew install --cask postman
+  brew install --cask docker
+  brew install --cask teamviewer
+  brew install --cask tailscale
+  brew install --cask adobe-acrobat-reader
+  brew install --cask libreoffice
+
+  echo "Cleaning up Homebrew..."
+  brew cleanup
+  echo "Applications installed successfully."
 }
 
-# Function to add a new user
-add_new_user() {
-  echo -n "Do you want to add a new user? (yes/no): "
-  read add_user
+# Function to configure macOS settings
+configure_macos_settings() {
+  echo "Configuring macOS settings..."
 
-  if [[ "$add_user" == "yes" ]]; then
-    echo -n "Enter new username: "
-    read username
-    echo -n "Enter password: "
-    read -s password
-    echo ""
-    echo -n "Should this user be an admin? (yes/no): "
-    read is_admin
+  # Dock settings
+  echo "Configuring Dock settings..."
+  defaults write com.apple.dock autohide -bool true
+  defaults write com.apple.dock magnification -bool true
+  defaults write com.apple.dock tilesize -int 36
+  killall Dock
 
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-      sudo useradd -m "$username"
-      echo "$username:$password" | sudo chpasswd
-      if [[ "$is_admin" == "yes" ]]; then
-        sudo usermod -aG sudo "$username"
-        echo "User $username added with admin privileges."
-      else
-        echo "User $username added without admin privileges."
-      fi
+  # Finder settings
+  echo "Configuring Finder settings..."
+  defaults write com.apple.finder AppleShowAllFiles -bool true
+  defaults write com.apple.finder ShowPathbar -bool true
+  defaults write com.apple.finder ShowStatusBar -bool true
+  killall Finder
 
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-      sudo sysadminctl -addUser "$username" -password "$password"
-      if [[ "$is_admin" == "yes" ]]; then
-        sudo dscl . -append /Groups/admin GroupMembership "$username"
-        echo "User $username added with admin privileges."
-      else
-        echo "User $username added without admin privileges."
-      fi
+  # Enable Dark Mode
+  echo "Enabling Dark Mode..."
+  osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+
+  # Other settings
+  echo "Configuring miscellaneous macOS settings..."
+  defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+  defaults write NSGlobalDomain KeyRepeat -int 1
+  defaults write NSGlobalDomain InitialKeyRepeat -int 15
+
+  echo "macOS settings configured."
+}
+
+# Function to create a new user
+create_new_user() {
+  echo "Would you like to create a new user? (y/n)"
+  read create_user
+  if [ "$create_user" == "y" ]; then
+    echo "Enter the new username:"
+    read new_username
+    echo "Enter the full name of the new user:"
+    read full_name
+    echo "Should this user have admin privileges? (y/n)"
+    read admin_privileges
+
+    if [ "$admin_privileges" == "y" ]; then
+      sudo sysadminctl -addUser "$new_username" -fullName "$full_name" -admin
+      echo "Admin user $new_username created successfully."
+    else
+      sudo sysadminctl -addUser "$new_username" -fullName "$full_name"
+      echo "Standard user $new_username created successfully."
     fi
   else
-    echo "No new user will be added."
+    echo "User creation skipped."
   fi
 }
 
-# Function to clean up unnecessary packages (Debian example)
-clean_up_system() {
-  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "Removing unnecessary packages..."
-    sudo apt-get remove -y --purge thunderbird libreoffice-common &> /dev/null &
-    show_progress "Removing unwanted packages"
-  fi
+# Main script execution
+main() {
+  echo "Starting macOS setup..."
+
+  install_xcode_tools
+  install_homebrew
+  install_common_apps
+  configure_macos_settings
+  create_new_user
+
+  echo "Setup complete! Enjoy your newly configured macOS system."
 }
 
-# Main execution starts here
-
-echo "Starting system setup..."
-
-# Install Homebrew if on macOS
-install_homebrew
-
-# Update the system
-update_system
-
-# Install packages (TeamViewer, Tailscale, Adobe Reader, etc.)
-install_packages
-
-# Enable dark mode (macOS only)
-enable_dark_mode
-
-# Ask to add a new user
-add_new_user
-
-# Clean up unnecessary packages (Debian only)
-clean_up_system
-
-echo "System setup complete!"
+main
