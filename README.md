@@ -122,6 +122,3 @@ During execution, the script will:
 ### License
 This project is licensed under the **MIT License**. See the LICENSE file for details.
 
----
-
-For further questions or issues, feel free to reach out! 🚀
