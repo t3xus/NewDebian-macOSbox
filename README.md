@@ -1,61 +1,127 @@
+
 # NewDebian-macOSbox
 
-![Static Badge](https://img.shields.io/badge/Author-Jgooch-1F4D37)
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Static Badge](https://img.shields.io/badge/Distribution-npm-orange)
-![Target](https://img.shields.io/badge/Target-macOS-cccccc)
-![Target](https://img.shields.io/badge/Target-Debian-red)
-# System Setup and Application Deployment Script (Debian/macOS)
+![Static Badge](https://img.shields.io/badge/Author-Jgooch-1F4D37)  
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)  
+![Static Badge](https://img.shields.io/badge/Distribution-npm-orange)  
+![Target](https://img.shields.io/badge/Target-macOS-cccccc)  
+![Target](https://img.shields.io/badge/Target-Debian-red)  
 
-## Overview
+## System Setup and Application Deployment Script (Debian/macOS)
 
-This script automates the system setup and configuration on **Debian-based Linux distributions** and **macOS**.
+### Overview
+
+This script automates the system setup and configuration on **Debian-based Linux distributions** and **macOS**, providing distinct and specialized features for each platform.
+
+---
+
+### Key Differences Between macOS and Debian Versions:
+- **macOS**:
+  - Installs and configures Homebrew as the package manager.
+  - Enables macOS-specific GUI customizations like **Dark Mode**, **Dock adjustments**, and **Finder preferences**.
+  - Installs GUI apps like Google Chrome, Slack, Spotify, and Adobe Acrobat Reader via Homebrew Cask.
+  - Automates Xcode Command Line Tools installation.
+  - Allows user creation with admin privileges using `sysadminctl`.
+
+- **Debian**:
+  - Uses `apt` for package management.
+  - Handles unwanted package cleanup using `apt autoremove`.
+  - Focused on CLI tools and lightweight GUI app installations for server environments.
+  - Includes Debian-specific services setup.
+
+---
 
 ### Main Features:
-- **System Update**: Automatically updates the system to the latest software versions.
-- **Homebrew Installation**: Installs Homebrew on macOS if it's not already installed.
-- **Package Installation**: Silently installs essential applications like **TeamViewer**, **Tailscale**, **Adobe Acrobat Reader**, and **LibreOffice**.
-- **Dark Mode**: Enables dark mode on macOS.
-- **New User Creation**: Prompts the user to create a new system user, with an option to give admin privileges.
-- **Clean Up**: Removes unwanted packages from Debian-based systems.
-  
-## Applications Installed:
-- **TeamViewer**: Remote control and desktop sharing.
-- **Tailscale**: Secure VPN for easy remote access.
-- **Adobe Acrobat Reader**: PDF reader.
-- **LibreOffice**: Office suite (equivalent to Microsoft Office).
-- **HomeBrew**: Homebrew package manager for macOS 
+- **System Update**: Updates all system packages to their latest versions.
+- **Homebrew Installation** (macOS): Installs Homebrew if not present and configures the shell environment.
+- **Dark Mode** (macOS): Automatically enables Dark Mode using AppleScript.
+- **User Creation**: Prompts to create a new user with or without admin privileges.
+- **Common Application Installation**: Installs essential tools and applications, including:
+  - TeamViewer
+  - Tailscale
+  - Adobe Acrobat Reader
+  - LibreOffice
+  - Google Chrome
+  - Visual Studio Code
+  - Spotify
+- **Clean Up** (Debian): Removes unused packages to save disk space.
 
-## How to Use
+---
 
-1. **Download the Script**:
-   - Copy the script into a file on your system (e.g., `system-setup.sh`).
+### Applications Installed:
+| Application         | macOS                | Debian               |
+|---------------------|----------------------|----------------------|
+| **TeamViewer**      | ✅ via Homebrew      | ✅ via apt           |
+| **Tailscale**       | ✅ via Homebrew      | ✅ via apt           |
+| **Adobe Reader**    | ✅ via Homebrew      | N/A                 |
+| **LibreOffice**     | ✅ via Homebrew      | ✅ via apt           |
+| **Google Chrome**   | ✅ via Homebrew      | ✅ via apt           |
+| **Spotify**         | ✅ via Homebrew      | ✅ via snap          |
 
-2. **Make the Script Executable**:
-   Run the following command to make the script executable:
+---
+
+### How to Use
+
+#### macOS Instructions:
+1. **Download the Script**:  
+   Save the script as `macos-setup.sh`.
+
+2. **Make the Script Executable**:  
    ```bash
-   chmod +x system-setup.sh
+   chmod +x macos-setup.sh
    ```
 
-3. **Run the Script**:
-   Execute the script with:
+3. **Run the Script**:  
    ```bash
-   ./system-setup.sh
+   ./macos-setup.sh
    ```
 
-4. **Follow Prompts**:
-   - The script will prompt you for creating a new user, and whether to give admin privileges.
-   - The script will also automatically handle system updates and application installations.
+4. **Follow Prompts**:  
+   - Configure macOS settings.
+   - Install applications via Homebrew.
+   - Create a new user, if desired.
 
-## Example of Script Execution
+---
 
+#### Debian Instructions:
+1. **Download the Script**:  
+   Save the script as `debian-setup.sh`.
+
+2. **Make the Script Executable**:  
+   ```bash
+   chmod +x debian-setup.sh
+   ```
+
+3. **Run the Script**:  
+   ```bash
+   ./debian-setup.sh
+   ```
+
+4. **Follow Prompts**:  
+   - Update and clean the system.
+   - Install applications via `apt`.
+
+---
+
+### Example of Script Execution:
 ```bash
-./system-setup.sh
+# macOS
+./macos-setup.sh
+
+# Debian
+./debian-setup.sh
 ```
 
 During execution, the script will:
-- Check and install Homebrew on macOS if not already present.
-- Update system software.
+- Configure the system (specific to the operating system).
 - Install the specified applications.
-- Optionally, create a new user with or without admin privileges.
-- Clean up unnecessary packages (Debian only).
+- Optionally create a new user with or without admin privileges.
+
+---
+
+### License
+This project is licensed under the **MIT License**. See the LICENSE file for details.
+
+---
+
+For further questions or issues, feel free to reach out! 🚀
